@@ -20,22 +20,31 @@ basic_punct <-function() {
     "@")
 } 
 
-
-
-
 basic_words <- c(quanteda::stopwords(), "can", 'that’s', "will", "one", "two", "three", "four", "five", "six", "seven", 
                  "eight", "nine", "ten","eleven", "mother", "father", "wife", "husband", "grandmother", "grandfather",
                  "mothers", "fathers", "mother's", "father's")
 
 basic_words <- basic_words[order(nchar(basic_words), decreasing = T)]
 
-
 stop_words <- function(){
   basic_words
 }
 
-stop_words()
 
+# tokenize with words and punctuation -------------------------------------
 
+# only want to generate stopwords once when getting candidates from a vector
+prep_stop_words <- function(split_words = stop_words(), split_punct = basic_punct()) {
+  if (is.null(split_words) && is.null(split_punct)) {
+    stop("Please provide a vector of stop words or punctuation or use provided stopwords")
+  } 
+
+  
+  words <- stringr::str_c("\\b(", split_words, ")\\b", sep = "")
+  names <- c(words, split_punct)
+  splits <- rep("*", length(names))
+  
+  purrr::set_names(splits, names)
+}
 
 

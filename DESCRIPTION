@@ -1,12 +1,19 @@
 Package: rakeR
 Type: Package
-Title: What the Package Does (Title Case)
+Title: An implimentation of rapid automatic keyword extraction for R.
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Authors@R: person("Lewis", "Kirvan", , "lewis.kirvan@gmail.com", c("aut", "cre"))
+Description: An simple approach to extracting document level keyworkds as
+    described in: Rose, S., Engel, D., Cramer, N., & Cowley, W. (2010). Automatic
+    Keyword Extraction from Individual Documents. In M. W. Berry & J. Kogan (Eds.),
+    Text Mining: Theory and Applications: John Wiley & Sons.
+License: License: GPL-2 | file LICENSE
 Encoding: UTF-8
 LazyData: true
-Suggests: testthat
+Suggests:
+    testthat
+Imports:
+    dplyr (>= 0.7.0),
+    stringr (>= 1.2.0),
+    quanteda (>= 0.9.9)
+RoxygenNote: 5.0.1
