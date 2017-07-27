@@ -17,12 +17,13 @@ basic_punct <-function() {
     "/",
     "$",
     "&",
-    "@")
+    "@",
+    "-")
 } 
 
 basic_words <- c(quanteda::stopwords(), "can", 'that’s', "will", "one", "two", "three", "four", "five", "six", "seven", 
                  "eight", "nine", "ten","eleven", "mother", "father", "wife", "husband", "grandmother", "grandfather",
-                 "mothers", "fathers", "mother's", "father's")
+                 "mothers", "fathers", "mother's", "father's", "together", "live", "us", "new", "ones")
 
 basic_words <- basic_words[order(nchar(basic_words), decreasing = T)]
 
