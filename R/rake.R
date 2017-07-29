@@ -19,7 +19,7 @@
 #'   each document. key phrases are names and values are ranked
 #'   
 #'   
-rake <- function(x, n = 10, method = "degreeFreq") {
+rake <- function(x, n = 10, method = "degreeFreq", split_words = stop_words(), split_punct = basic_punct()) {
   
   if(!purrr::is_character(x)){
     stop("rake only works on character vectors")
@@ -33,7 +33,7 @@ rake <- function(x, n = 10, method = "degreeFreq") {
     scores <- purrr::map_dbl(token_list, .f = score_one, df  = df, method  = method)
   }
   
-  candidates <- candidate_phrases(x)
+  candidates <- candidate_phrases(x, split_words = split_words, split_punct = split_punct)
   candidates <- candidates[purrr::map_lgl(candidates, function(x) length(x) != 0)]
   
   token_list <- purrr::map(candidates, quanteda::tokenize)
@@ -46,6 +46,5 @@ rake <- function(x, n = 10, method = "degreeFreq") {
   phrase_scores
   
 }
-
 
 
