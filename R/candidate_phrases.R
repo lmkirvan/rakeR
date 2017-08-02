@@ -16,18 +16,11 @@
 #' candidate_phrases(test_text)
 #' candidate_phrases(test_text, c("the","and"), c(","," \\."))
 #' candidate_phrases(test_text, NULL, " ")   
-
-
-
 candidate_phrases <- function(x, split_words = stop_words(), split_punct = basic_punct()){
-  
-  line_break <- "\\n(?!\\.)"
   
   splits <- prep_stop_words(split_words = split_words, split_punct = split_punct)
   
-  sentences <- stringr::str_replace_all(x, line_break, "\\.")
-  sentences <- quanteda::tokenize(sentences, what = "sentence")
-  sentences <- purrr::map(sentences, .f = stringr::str_replace_all, pattern =  "\\.", replacement = "")
+  sentences <- tokenizers::tokenize_sentences(x)
   # there are stupid curly apostrophes that must be removed
   sentences <- purrr::map(sentences, .f = stringr::str_replace_all, pattern =  "’", replacement = "'")
   sentences <- purrr::map(sentences, .f = tolower)
@@ -43,9 +36,12 @@ candidate_phrases <- function(x, split_words = stop_words(), split_punct = basic
   candidates <- purrr::map(candidates, stringr::str_trim, side = "both")
   candidates <- purrr::map(candidates, function(x) x[nchar(x) > 1])
 
+  if (!is.null(names(x))){
+    candidates <- purrr::set_names(candidates, names(x))
+  }
+  
   candidates
 }
 
 
-
-
+#names(test_text)
