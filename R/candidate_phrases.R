@@ -34,7 +34,7 @@ candidate_phrases <- function(x, split_words = stop_words(), split_punct = basic
   candidates <- purrr::at_depth(.x = candidates, .depth = 1, .f = purrr::as_vector)
   # todo this next line shouldn't be necessary, but I can't figure out why the split is comming back with spaces
   candidates <- purrr::map(candidates, stringr::str_trim, side = "both")
-  candidates <- purrr::map(candidates, function(x) x[nchar(x) > 1])
+  candidates <- purrr::map(candidates, function(x) x[nchar(x) > 2])
 
   if (!is.null(names(x))){
     candidates <- purrr::set_names(candidates, names(x))
@@ -44,4 +44,4 @@ candidate_phrases <- function(x, split_words = stop_words(), split_punct = basic
 }
 
 
-#names(test_text)
+

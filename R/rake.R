@@ -1,4 +1,3 @@
-
 get_token_scores <- function(candidate_phrase_set){
   
   tokens <- tokenizers::tokenize_words(candidate_phrase_set)
@@ -20,9 +19,21 @@ get_token_scores <- function(candidate_phrase_set){
     mutate(degreeFreq = degree / freq)
   
   temp_df
-  
 }
 
+score_one <- function(test_token, df, method = method) {
+  
+  sum(df[df$tokens %in% test_token, ][ , method], na.rm = T)
+}
+
+get_scores <- function(token_list, df, method){
+  
+  #if (any(lengths(token_list) < 1)){
+  #  token_list <- token_list[lengths(token_list) > 0]
+  #}
+  
+  scores <- purrr::map_dbl(token_list, .f = score_one, df  = df, method  = method)
+}
 
 
 #' Rapid automatic extraction of keywords from documents
@@ -52,22 +63,8 @@ rake <- function(x, n = 10, method = "degreeFreq", split_words = stop_words(), s
     stop("rake only works on character vectors")
   }
   
-  score_one <- function(test_token, df, method = method) {
-    
-    if (!all(lengths(token_list) > 0)){
-      token_list <- token_list[lengths(token_list) > 0]
-    }
-    
-    sum(df[df$tokens %in% test_token, ][ , method], na.rm = T)
-  }
-  
-  get_scores <- function(token_list, df, method){
-    
-    scores <- purrr::map_dbl(token_list, .f = score_one, df  = df, method  = method)
-  }
-  
   candidates <- candidate_phrases(x, split_words = split_words, split_punct = split_punct)
-  candidates <- candidates[purrr::map_lgl(candidates, function(x) length(x) != 0)]
+  #candidates <- candidates[purrr::map_lgl(candidates, function(x) length(x) != 0)]
   
   token_list <- purrr::map(candidates, tokenizers::tokenize_words)
   token_scores <- purrr::map(candidates, get_token_scores)
@@ -80,32 +77,3 @@ rake <- function(x, n = 10, method = "degreeFreq", split_words = stop_words(), s
   
 }
 
-
-all(lengths(token_list[[1]]) > 0)
-
-#df <- readr::read_csv(file = "R/complaints-08-02-2017_18_37.csv")
-#
-#glimpse(df)
-#
-#wh <- df$what_happened
-#
-#wh <- wh[nchar(wh) > 140]
-#
-##
-##
-# wh[650]
-# 
-# token_scores
-## 
- rakes <- list()
-## 
- for(i in 1:length(wh)){
-   rakes[i] <- rake(wh[i])
- }
-## 
-###
-##finish - start
-#
-#rows <- purrr::as_vector(purrr::map(token_scores, .f = nrow))
-#
-#min(rows)
