@@ -1,3 +1,35 @@
+get_token_scores <- function(candidate_phrase_set){
+  
+  tokens <- tokenizers::tokenize_words(candidate_phrase_set)
+  lengths <- lengths(tokens)
+  degree_vec <- purrr::as_vector(purrr::map(lengths, function(x) rep(x, x)))
+  phrase_vec <- purrr::as_vector(purrr::map2(candidate_phrase_set, lengths, rep))
+  
+  temp_df <- dplyr::data_frame(
+    tokens = purrr::as_vector(tokens),
+    degrees = degree_vec,
+    phrase_vec = phrase_vec
+    
+  )
+  
+  temp_df <- temp_df %>% 
+    group_by(tokens) %>% 
+    mutate(
+      freq = n(),
+      degree = sum(degrees),
+      degreeFreq = degree / freq)
+  
+  temp_df
+}
+
+
+get_scores <- function(score_df) {
+  score_df %>% 
+    group_by(phrase_vec) %>% 
+    summarise(
+      score = sum(degreeFreq)
+    )
+  }
 #' Rapid automatic extraction of keywords from documents
 #' 
 #' This is the main functions for extracting and returning ranked keywords. This
@@ -17,35 +49,19 @@
 #' rake(test_text, 15)
 #' @value returns a list with elements composed of one named integer vector for
 #'   each document. key phrases are names and values are ranked
-#'   
-#'   
-rake <- function(x, n = 10, method = "degreeFreq") {
+rake <- function(x, n = 10, split_words = stop_words(), split_punct = basic_punct()) {
+  
   
   if(!purrr::is_character(x)){
     stop("rake only works on character vectors")
   }
   
-  score_one <- function(test_token, df, method = method) {
-    sum(df[df$tokens %in% test_token, ][ , method])
+  candidates <- candidate_phrases(x, split_words = split_words, split_punct = split_punct)
+  token_list <- purrr::map(candidates, tokenizers::tokenize_words)
+  token_scores <<- purrr::map(candidates, get_token_scores)
+  
+  scores <- purrr::map(token_scores, get_scores)
+  scores
   }
-  
-  get_scores <- function(token_list, df, method, n = n){
-    scores <- purrr::map_dbl(token_list, .f = score_one, df  = df, method  = method)
-  }
-  
-  candidates <- candidate_phrases(x)
-  candidates <- candidates[purrr::map_lgl(candidates, function(x) length(x) != 0)]
-  
-  token_list <- purrr::map(candidates, quanteda::tokenize)
-  token_scores <- purrr::map(candidates, get_token_scores)
-  
-  phrase_scores <- purrr::map2(.x = token_list, .y = token_scores, .f = get_scores, n = n, method = method)
-  phrase_scores <- purrr::map2(phrase_scores, candidates, purrr::set_names)
-  phrase_scores <- purrr::map(phrase_scores, function(x)  x[order(x, decreasing =T) ][1:n] )
-  
-  phrase_scores
-  
-}
-
 
 

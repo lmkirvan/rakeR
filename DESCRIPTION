@@ -15,5 +15,6 @@ Suggests:
 Imports:
     dplyr (>= 0.7.0),
     stringr (>= 1.2.0),
-    quanteda (>= 0.9.9)
+    tokenizers (>= 0.1.4),
+    magrittr
 RoxygenNote: 5.0.1
