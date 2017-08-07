@@ -13,8 +13,8 @@ get_token_scores <- function(candidate_phrase_set){
   )
   
   temp_df <- temp_df %>% 
-    group_by(tokens) %>% 
-    mutate(
+    dplyr::group_by(tokens) %>% 
+    dplyr::mutate(
       freq = n(),
       degree = sum(degrees),
       degreeFreq = degree / freq)
@@ -25,8 +25,8 @@ get_token_scores <- function(candidate_phrase_set){
 
 get_scores <- function(score_df) {
   score_df %>% 
-    group_by(phrase_vec) %>% 
-    summarise(
+    dplyr::group_by(phrase_vec) %>% 
+    dplyr::summarise(
       score = sum(degreeFreq)
     )
   }
@@ -63,5 +63,4 @@ rake <- function(x, n = 10, split_words = stop_words(), split_punct = basic_punc
   scores <- purrr::map(token_scores, get_scores)
   scores
   }
-
 
