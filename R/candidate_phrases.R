@@ -40,7 +40,11 @@ candidate_phrases <- function(x, split_words = stop_words(), split_punct = basic
     candidates <- purrr::set_names(candidates, names(x))
   }
   
-  candidates
+  if (any(lengths(candidates) == 0)){
+    warning("Some documents were silently dropped")
+  }
+  
+  candidates[-which(lengths(candidates)== 0)]
 }
 
 

@@ -29,7 +29,12 @@ get_scores <- function(score_df) {
     dplyr::summarise(
       score = sum(degreeFreq)
     )
-  }
+}
+
+
+
+
+
 #' Rapid automatic extraction of keywords from documents
 #' 
 #' This is the main functions for extracting and returning ranked keywords. This
@@ -49,7 +54,11 @@ get_scores <- function(score_df) {
 #' rake(test_text, 15)
 #' @value returns a list with elements composed of one named integer vector for
 #'   each document. key phrases are names and values are ranked
-rake <- function(x, n = 10, split_words = stop_words(), split_punct = basic_punct()) {
+rake <- function(x, 
+                 split_words = stop_words(),
+                 split_punct = basic_punct(),
+                 sorted = F,
+                 include_token_scores = F) {
   
   
   if(!purrr::is_character(x)){
@@ -61,6 +70,22 @@ rake <- function(x, n = 10, split_words = stop_words(), split_punct = basic_punc
   token_scores <- purrr::map(candidates, get_token_scores)
   
   scores <- purrr::map(token_scores, get_scores)
-  scores
-  }
+  
+  if (sorted == T & include_token_scores == T){
+    scores <- purrr::map(
+      scores, .f = function(x) dplyr::arrange(x, desc(x$score)))
+    list(phrase_scores = scores, token_scores = token_scores)
+  } else if (sorted == T & include_token_scores == F) {
+    purrr::map(
+      scores, .f = function(x) dplyr::arrange(x, desc(x$score)))
+  } else if (sorted == F & include_token_scores == T) {
+    list(phrase_scores = scores, token_scores = token_scores)
+  } else {
+    scores
+  } 
+  
+}
+ 
 
+
+                     
