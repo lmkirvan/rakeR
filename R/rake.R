@@ -58,7 +58,7 @@ rake <- function(x, n = 10, split_words = stop_words(), split_punct = basic_punc
   
   candidates <- candidate_phrases(x, split_words = split_words, split_punct = split_punct)
   token_list <- purrr::map(candidates, tokenizers::tokenize_words)
-  token_scores <<- purrr::map(candidates, get_token_scores)
+  token_scores <- purrr::map(candidates, get_token_scores)
   
   scores <- purrr::map(token_scores, get_scores)
   scores
