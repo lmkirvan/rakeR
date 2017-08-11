@@ -24,27 +24,26 @@ candidate_phrases <- function(x, split_words = stop_words(), split_punct = basic
   # there are stupid curly apostrophes that must be removed
   sentences <- purrr::map(sentences, .f = stringr::str_replace_all, pattern =  "’", replacement = "'")
   sentences <- purrr::map(sentences, .f = tolower)
-
+  
   candidates <- purrr::map(
     sentences, 
     .f = stringr::str_replace_all, pattern = splits)
-
+  
   candidates <- purrr::map(candidates, stringr::str_split, pattern = "\\*", simplify = F)
   # the list at this point is list(document)  -> list(sentence1... sentenceN) -> list(token1...2) 
   candidates <- purrr::at_depth(.x = candidates, .depth = 1, .f = purrr::as_vector)
   # todo this next line shouldn't be necessary, but I can't figure out why the split is comming back with spaces
   candidates <- purrr::map(candidates, stringr::str_trim, side = "both")
   candidates <- purrr::map(candidates, function(x) x[nchar(x) > 2])
-
+  
   if (!is.null(names(x))){
     candidates <- purrr::set_names(candidates, names(x))
   }
   
   if (any(lengths(candidates) == 0)){
+    candidates[-which(lengths(candidates)== 0)]
     warning("Some documents were silently dropped")
+  } else {
+    candidates
   }
-  
-  candidates[-which(lengths(candidates)== 0)]
 }
-
-
