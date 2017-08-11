@@ -22,7 +22,6 @@ candidate_phrases <- function(x, split_words = stop_words(), split_punct = basic
   
   sentences <- tokenizers::tokenize_sentences(x)
   # there are stupid curly apostrophes that must be removed
-  sentences <- purrr::map(sentences, .f = stringr::str_replace_all, pattern =  "’", replacement = "'")
   sentences <- purrr::map(sentences, .f = tolower)
   
   candidates <- purrr::map(

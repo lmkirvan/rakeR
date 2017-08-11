@@ -2,7 +2,7 @@ test_text <- c("Compatibility of systems of linear constraints over the set of n
 Criteria of compatibility of a system of linear Diophantine equations, strict inequations, and nonstrict inequations are considered. Upper bounds for components of a minimal set of solutions and algorithms of construction of minimal generating sets of solutions for all types of systems are given. These criteria and the corresponding algorithms for constructing a minimal supporting set of solutions can be used in solving all the considered types of systems and systems of mixed types.")
 
 basic_punct <-function() {
-    c("s/\\\\0//g", "\\r", "\\n", "\\$\\$", "(?!')[[:punct:]]")
+    c("(?!['-])[[:punct:]]")
 } 
 
 stop_words <- function(){
@@ -27,7 +27,7 @@ stop_words <- function(){
               "further", "then", "once", "here", "there", "when", "where", "why", "how",
               "all", "any", "both", "each", "few", "more", "most", "other", "some", "such",
               "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "will",
-              "like")
+              "like", "can")
   words
 }
 
@@ -37,7 +37,7 @@ prep_stop_words <- function(split_words = stop_words(), split_punct = basic_punc
     stop("Please provide a vector of stop words or punctuation or use provided stopwords")
   } 
 
-  words <- stringr::str_c("\\b(", split_words, ")\\b", sep = "")
+  words <- stringr::str_c("\\b(", split_words, ")(?![\\w-])", sep = "")
   names <- c(words, split_punct)
   splits <- rep("*", length(names))
   
