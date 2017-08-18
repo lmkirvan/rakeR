@@ -16,26 +16,23 @@
 #' candidate_phrases(test_text)
 #' candidate_phrases(test_text, c("the","and"), c(","," \\."))
 #' candidate_phrases(test_text, NULL, " ")   
-candidate_phrases <- function(x, split_words = stop_words(), split_punct = basic_punct()){
+candidate_phrases <- function(x, split_words = smart_stop_words(), split_punct = basic_punct()){
   
   splits <- prep_stop_words(split_words = split_words, split_punct = split_punct)
   
-  sentences <- tokenizers::tokenize_sentences(x)
+  #x <- tokenizers::tokenize_sentences(x)
   # there are stupid curly apostrophes that must be removed
-  sentences <- purrr::map(sentences, .f = tolower)
-  
-  candidates <- purrr::map(
-    sentences, 
-    .f = stringr::str_replace_all, pattern = splits)
-  
-  candidates <- purrr::map(candidates, stringr::str_split, pattern = "\\*", simplify = F)
-  # the list at this point is list(document)  -> list(sentence1... sentenceN) -> list(token1...2) 
-  candidates <- purrr::at_depth(.x = candidates, .depth = 1, .f = purrr::as_vector)
-  # todo this next line shouldn't be necessary, but I can't figure out why the split is comming back with spaces
+  x <- stringr::str_to_lower(x)
+  candidates <- stringr::str_replace_all(x, pattern = splits)
+  candidates <- stringr::str_split_fixed(candidates, pattern = "\\*", simplify = F)
   candidates <- purrr::map(candidates, stringr::str_trim, side = "both")
+  candidates <- purrr::map(candidates, function(x) x[nchar(x)> 0])
   
   if (!is.null(names(x))){
     candidates <- purrr::set_names(candidates, names(x))
+  } else {
+    names <- stringr::str_c(c("document"),as.character(1:length(candidates)), sep = "-")
+    candidates <- purrr::set_names(candidates, names)
   }
   
   if (any(lengths(candidates) == 0)){

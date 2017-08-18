@@ -23,7 +23,7 @@ get_token_scores <- function(candidate_phrase_set){
 }
 
 
-get_scores <- function(score_df, top_fraction) {
+get_phrase_scores <- function(score_df, top_fraction) {
   score_df %>% 
     dplyr::group_by(phrase_vec) %>% 
     dplyr::summarise(
@@ -31,7 +31,6 @@ get_scores <- function(score_df, top_fraction) {
     dplyr::arrange(
       desc(score)) %>% 
     head(round(nrow(score_df) * top_fraction))
-    
 }
 #' Rapid automatic extraction of keywords from documents
 #' 
@@ -53,7 +52,7 @@ get_scores <- function(score_df, top_fraction) {
 #' @value returns a list with elements composed of one named integer vector for
 #'   each document. key phrases are names and values are ranked
 rake <- function(x, 
-                 split_words = stop_words(),
+                 split_words = smart_stop_words(),
                  split_punct = basic_punct(),
                  include_token_scores = F,
                  top_fraction = 1/3) {
@@ -67,13 +66,13 @@ rake <- function(x,
   token_list <- purrr::map(candidates, tokenizers::tokenize_words)
   token_scores <- purrr::map(candidates, get_token_scores)
   
-  scores <- purrr::map(token_scores, get_scores, top_fraction = top_fraction)
+  scores <- purrr::map(token_scores, get_phrase_scores, top_fraction = top_fraction)
 
   if ( include_token_scores == T) {
     list(phrase_scores = scores, token_scores = token_scores)
   } else {
     scores
   } 
-  
 }
+
 
