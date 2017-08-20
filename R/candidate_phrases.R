@@ -22,9 +22,9 @@ candidate_phrases <- function(x, split_words = smart_stop_words(), split_punct =
   
   #x <- tokenizers::tokenize_sentences(x)
   # there are stupid curly apostrophes that must be removed
-  x <- stringr::str_to_lower(x)
-  candidates <- stringr::str_replace_all(x, pattern = splits)
-  candidates <- stringr::str_split_fixed(candidates, pattern = "\\*", simplify = F)
+  candidates <- stringr::str_to_lower(x)
+  candidates <- stringr::str_replace_all(candidates, pattern = splits)
+  candidates <- stringr::str_split(candidates, pattern = "\\*", simplify = F)
   candidates <- purrr::map(candidates, stringr::str_trim, side = "both")
   candidates <- purrr::map(candidates, function(x) x[nchar(x)> 0])
   
@@ -44,6 +44,5 @@ candidate_phrases <- function(x, split_words = smart_stop_words(), split_punct =
   )
   
 }
-
 
 

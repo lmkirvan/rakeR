@@ -1,37 +1,67 @@
-get_token_scores <- function(candidate_phrase_set){
+get_phrase_scores <- function(candidates, top_fraction = top_fraction){
   
-  tokens <- tokenizers::tokenize_words(candidate_phrase_set)
-  lengths <- lengths(tokens)
-  degree_vec <- purrr::as_vector(purrr::map(lengths, function(x) rep(x, x)))
-  phrase_vec <- purrr::as_vector(purrr::map2(candidate_phrase_set, lengths, rep))
+  tokens <- purrr::map(candidates, tokenizers::tokenize_words)
+  token_lengths <- purrr::map(tokens, lengths)
   
-  temp_df <- dplyr::data_frame(
-    tokens = purrr::as_vector(tokens),
-    degrees = degree_vec,
-    phrase_vec = phrase_vec
-    
+  temp_df <<- dplyr::data_frame(
+    names = purrr::as_vector(purrr::map2(names(candidates), purrr::map_int(token_lengths, sum), rep)),
+    phrases = purrr::as_vector(purrr::map2(candidates, token_lengths, rep)),
+    tokens = purrr::as_vector(purrr::at_depth(tokens, 1, .f = purrr::as_vector)),
+    degree = purrr::as_vector(purrr::map2(token_lengths, token_lengths, rep))  
   )
   
   temp_df <- temp_df %>% 
-    dplyr::group_by(tokens) %>% 
-    dplyr::mutate(
+    group_by(names, tokens) %>% 
+    mutate(
       freq = n(),
-      degree = sum(degrees),
-      degreeFreq = degree / freq)
+      degree = sum(degree),
+      degreeFreq = degree / freq)%>%
+    group_by(names, phrases) %>% 
+    summarise(
+      score = sum(degreeFreq)) %>% 
+    filter(
+      score > quantile(score, top_fraction)
+    )
+     
   
   temp_df
-}
+}  
 
 
-get_phrase_scores <- function(score_df, top_fraction) {
-  score_df %>% 
-    dplyr::group_by(phrase_vec) %>% 
-    dplyr::summarise(
-      score = sum(degreeFreq)) %>% 
-    dplyr::arrange(
-      desc(score)) %>% 
-    head(round(nrow(score_df) * top_fraction))
-}
+# get_token_scores <- function(candidate_phrase_set){
+#   
+#   tokens <- tokenizers::tokenize_words(candidate_phrase_set)
+#   token_lengths <- lengths(tokens)
+#   degree_vec <- rep(token_lengths, token_lengths) 
+#   phrase_vec <- rep(candidate_phrase_set, token_lengths)
+#   
+#   temp_df <- dplyr::data_frame(
+#     tokens = purrr::as_vector(tokens),
+#     degrees = degree_vec,
+#     phrase_vec = phrase_vec
+#     
+#   )
+#   
+#   temp_df <- temp_df %>% 
+#     dplyr::group_by(tokens) %>% 
+#     dplyr::mutate(
+#       freq = n(),
+#       degree = sum(degrees),
+#       degreeFreq = degree / freq)
+#   
+#   temp_df
+# }
+# 
+# 
+# get_phrase_scores <- function(score_df, top_fraction) {
+#   score_df %>% 
+#     dplyr::group_by(phrase_vec) %>% 
+#     dplyr::summarise(
+#       score = sum(degreeFreq)) %>% 
+#     dplyr::arrange(
+#       desc(score)) %>% 
+#     head(round(nrow(score_df) * top_fraction))
+# }
 #' Rapid automatic extraction of keywords from documents
 #' 
 #' This is the main functions for extracting and returning ranked keywords. This
@@ -43,7 +73,7 @@ get_phrase_scores <- function(score_df, top_fraction) {
 #' 
 #' 
 #' @param x a character vector of texts to find keywords for
-#' @param n the number of ranked keyphrases to return
+#' @param top_fraction the fraction of the most highly ranked phrases to return
 #' @param method one of "degreeFreq", "degree", or "freq". degreeFreq is simply 
 #'   degree // frequency.
 #' @examples 
@@ -54,7 +84,6 @@ get_phrase_scores <- function(score_df, top_fraction) {
 rake <- function(x, 
                  split_words = smart_stop_words(),
                  split_punct = basic_punct(),
-                 include_token_scores = F,
                  top_fraction = 1/3) {
   
   
@@ -63,16 +92,10 @@ rake <- function(x,
   }
   
   candidates <- candidate_phrases(x, split_words = split_words, split_punct = split_punct)
-  token_list <- purrr::map(candidates, tokenizers::tokenize_words)
-  token_scores <- purrr::map(candidates, get_token_scores)
+  scores <- get_phrase_scores(candidates, top_fraction = top_fraction)
   
-  scores <- purrr::map(token_scores, get_phrase_scores, top_fraction = top_fraction)
-
-  if ( include_token_scores == T) {
-    list(phrase_scores = scores, token_scores = token_scores)
-  } else {
-    scores
-  } 
+  scores
+ 
 }
 
 
