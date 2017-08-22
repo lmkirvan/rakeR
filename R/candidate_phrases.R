@@ -16,9 +16,14 @@
 #' candidate_phrases(test_text)
 #' candidate_phrases(test_text, c("the","and"), c(","," \\."))
 #' candidate_phrases(test_text, NULL, " ")   
-candidate_phrases <- function(x, split_words = smart_stop_words(), split_punct = basic_punct()){
+candidate_phrases <- function(x, 
+                              split_words = smart_stop_words(), 
+                              split_punct = basic_punct(),
+                              remove_numbers = F){
   
-  splits <- prep_stop_words(split_words = split_words, split_punct = split_punct)
+  splits <- prep_stop_words(split_words = split_words, 
+                            split_punct = split_punct,
+                            remove_numbers = remove_numbers)
   
   #x <- tokenizers::tokenize_sentences(x)
   # there are stupid curly apostrophes that must be removed

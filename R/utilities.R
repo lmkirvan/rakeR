@@ -96,8 +96,8 @@ smart_stop_words <- function(){
              "where's", "whereafter", "whereas", "whereby", "wherein", "whereupon", "wherever", "whether",
              "which", "while", "whither", "who", "who's", "whoever", "whole", "whom", "whose", "why", "will",
              "willing", "wish", "with", "within", "without", "won't", "wonder", "would", "would", "wouldn't",
-             "x", "y", "yes", "yet", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself"
-             , "yourselves", "z", "zero", "'ve", as.character(1:20))
+             "x", "y", "yes", "yet", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself",
+             "yourselves", "z", "zero", "'ve","'s")
   
   words
   
@@ -105,13 +105,21 @@ smart_stop_words <- function(){
 
 
 # only want to generate stopwords once when getting candidates from a vector
-prep_stop_words <- function(split_words = stop_words(), split_punct = basic_punct()) {
+prep_stop_words <- function(split_words = stop_words(), split_punct = basic_punct(), remove_numbers = T) {
   if (is.null(split_words) && is.null(split_punct)) {
     stop("Please provide a vector of stop words or punctuation or use provided stopwords")
   } 
+  
 
-  words <- stringr::str_c("\\b(", split_words, ")(?![\\w-])", sep = "")
-  names <- c(words, split_punct)
+
+ words <- stringr::str_c("\\b(", split_words, ")(?![\\w-])", sep = "")
+  if(remove_numbers == T){
+    names <- c(split_punct, "\\(?[0-9,.]+\\)?", words)
+  } else if(remove_numbers == F) {
+    names <- c(words, split_punct)
+  } else {
+    stop("remove_numbers must be TRUE or FALSE")
+  }
   splits <- rep("*", length(names))
   
   purrr::set_names(splits, names)
