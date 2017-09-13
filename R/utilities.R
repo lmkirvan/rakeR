@@ -1,10 +1,10 @@
-test_text <- c("Compatibility of systems of linear constraints over the set of natural numbers
-Criteria of compatibility of a system of linear Diophantine equations, strict inequations, and nonstrict inequations are considered. Upper bounds for components of a minimal set of solutions and algorithms of construction of minimal generating sets of solutions for all types of systems are given. These criteria and the corresponding algorithms for constructing a minimal supporting set of solutions can be used in solving all the considered types of systems and systems of mixed types.")
+
 
 basic_punct <-function() {
     c("(?!['-])[[:punct:]]", "\\n")
 } 
 
+#' @export
 basic_stop_words <- function(){
   words <-  c("i've", "we've", "i", "me", "my", "myself", "we", "our", "ours", "ourselves", 
               "you", "your", "yours", "yourself", "yourselves", "he", "him", 
@@ -32,6 +32,7 @@ basic_stop_words <- function(){
 }
 
 
+#' @export
 smart_stop_words <- function(){
   
   words <- c("a", "a's", "able", "about", "above", "according", "accordingly", 
@@ -110,8 +111,6 @@ prep_stop_words <- function(split_words = stop_words(), split_punct = basic_punc
     stop("Please provide a vector of stop words or punctuation or use provided stopwords")
   } 
   
-
-
  words <- stringr::str_c("\\b(", split_words, ")(?![\\w-])", sep = "")
   if(remove_numbers == T){
     names <- c(split_punct, "\\(?[0-9,.]+\\)?", words)
@@ -124,10 +123,6 @@ prep_stop_words <- function(split_words = stop_words(), split_punct = basic_punc
   
   purrr::set_names(splits, names)
 }
-
-
-
-
 
 
 

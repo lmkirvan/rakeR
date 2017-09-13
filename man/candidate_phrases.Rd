@@ -4,8 +4,8 @@
 \alias{candidate_phrases}
 \title{Find candidate phrases from a vector of characters.}
 \usage{
-candidate_phrases(x, split_words = stop_words(),
-  split_punct = basic_punct())
+candidate_phrases(x, split_words = smart_stop_words(),
+  split_punct = basic_punct(), remove_numbers = F)
 }
 \arguments{
 \item{x}{a character vector}
@@ -18,12 +18,14 @@ default calls a function with basic punctuation}
 }
 \value{
 always returns a list with one element for each input text and
-  phrases stored in a character vector.
+  phrases stored in a character vector. If the character vector is name
+  then the names will be used throughout, otherwise this function 
+  generates sequential documents names.
 }
 \description{
 This is an input to the main phrase ranking function. It's included here 
 because it may have utility as tokenizer that allows tokenization based on 
-arbitrary tokens and puncuation. The tokenization does not cross sentences 
+arbitrary tokens and puncuation. The default tokenization does not cross sentences 
 and line breaks are treated as sentences for the purpose of tokenization.
 }
 \examples{
@@ -31,4 +33,3 @@ candidate_phrases(test_text)
 candidate_phrases(test_text, c("the","and"), c(","," \\\\."))
 candidate_phrases(test_text, NULL, " ")   
 }
-

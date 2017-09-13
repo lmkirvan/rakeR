@@ -1,6 +1,6 @@
 Package: rakeR
 Type: Package
-Title: An implimentation of rapid automatic keyword extraction for R.
+Title: An implementation of rapid automatic keyword extraction for R.
 Version: 0.1.0
 Authors@R: person("Lewis", "Kirvan", , "lewis.kirvan@gmail.com", c("aut", "cre"))
 Description: An simple approach to extracting document level keyworkds as
@@ -17,4 +17,4 @@ Imports:
     stringr (>= 1.2.0),
     tokenizers (>= 0.1.4),
     magrittr
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

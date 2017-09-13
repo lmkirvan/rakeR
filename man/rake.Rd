@@ -4,15 +4,20 @@
 \alias{rake}
 \title{Rapid automatic extraction of keywords from documents}
 \usage{
-rake(x, n = 10, method = "degreeFreq")
+rake(x, split_words = smart_stop_words(), split_punct = basic_punct(),
+  top_fraction = 1/3)
 }
 \arguments{
 \item{x}{a character vector of texts to find keywords for}
 
-\item{n}{the number of ranked keyphrases to return}
+\item{top_fraction}{the fraction of the most highly ranked phrases to return}
 
-\item{metho}{one of "degreeFreq", "degree", or "freq". degreeFreq is simply
+\item{method}{one of "degreeFreq", "degree", or "freq". degreeFreq is simply 
 degree // frequency.}
+}
+\value{
+returns a list with elements composed of one named integer vector for
+each document. key phrases are names and values are ranked
 }
 \description{
 This is the main functions for extracting and returning ranked keywords. This
@@ -24,6 +29,5 @@ including a vector of domain specific stop words.
 }
 \examples{
 rake(test_text, 5, "degree")
-rake(test_text, 15)  
+rake(test_text, 15)
 }
-
