@@ -35,7 +35,7 @@ basic_stop_words <- function(){
 #' @export
 smart_stop_words <- function(){
   
-  words <- c("a", "a's", "able", "about", "above", "according", "accordingly", 
+  words <- c("i've", "we've", "a", "a's", "able", "about", "above", "according", "accordingly", 
              "across", "actually", "after", "afterwards", "again", "against", 
              "ain't", "all", "allow", "allows", "almost", "alone", "along", 
              "already", "also", "although", "always", "am", "among", "amongst", 
@@ -61,7 +61,7 @@ smart_stop_words <- function(){
              "had", "hadn't", "happens", "hardly", "has", "hasn't", "have", "haven't", "having",
              "he", "he's", "hello", "help", "hence", "her", "here", "here's", "hereafter", "hereby",
              "herein", "hereupon", "hers", "herself", "hi", "him", "himself", "his", "hither",
-             "hopefully", "how", "howbeit", "however", "i", "i'd", "i'll", "i'm", "i've", "ie", 
+             "hopefully", "how", "howbeit", "however","i'd", "i'll", "i'm", "i've", "ie", "i",
              "if", "ignored", "immediate", "in", "inasmuch", "inc", "indeed", "indicate", "indicated",
              "indicates", "inner", "insofar", "instead", "into", "inward", "is", "isn't", "it",
              "it'd", "it'll", "it's", "its", "itself", "j", "just", "k", "keep", "keeps", "kept",
