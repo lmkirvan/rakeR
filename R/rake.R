@@ -49,18 +49,32 @@ get_phrase_scores <- function(candidates, top_fraction = top_fraction){
 rake <- function(x, 
                  split_words = smart_stop_words(),
                  split_punct = basic_punct(),
+                 split_on_numbers = T,
+                 stem = F,
                  top_fraction = 1/3) {
-  
   
   if(!purrr::is_character(x)){
     stop("rake only works on character vectors")
   }
   
-  candidates <- candidate_phrases(x, split_words = split_words, split_punct = split_punct)
+  if(stem == T){
+    x <- stem_in_place(x)
+    split_words <- stem_in_place(split_words)
+    split_words <- unique(split_words)
+  }
+  
+  candidates <- candidate_phrases(
+    x, 
+    split_words = split_words, 
+    split_punct = split_punct, 
+    remove_numbers = split_on_numbers
+    )
+  
   scores <- get_phrase_scores(candidates, top_fraction = top_fraction)
   
   scores
  
 }
+
 
 

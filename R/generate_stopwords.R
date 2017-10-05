@@ -19,10 +19,15 @@
 fortify_stopwords <- function(x, 
                               stopwords = smart_stop_words(), 
                               n = .97,
-                              sample_frac = 1){
+                              sample_frac = 1, 
+                              remove_numbers = FALSE){
+  
+  if(remove_numbers ==T ){
+    x <- stringr::str_replace_all(x, "\\(?[0-9,.]+\\)?", "")
+  }
   
   vec_to_count_df <- function(x){
-    x <-table(x)
+    x <- table(x)
     dplyr::data_frame(
       value = names(x),
       count = unname(x)
@@ -30,11 +35,13 @@ fortify_stopwords <- function(x,
   }
   
   len_x <- length(x)
+  
   x <- x[sample(1:len_x, size = round(len_x * sample_frac))]
   
   phrases <- candidate_phrases(x, remove_numbers = T)
   
   tokens <- purrr::as_vector(tokenizers::tokenize_words(x))
+  
   phrase_tokens <- purrr::as_vector(
     tokenizers::tokenize_words(
       purrr::flatten(phrases)
@@ -53,19 +60,12 @@ fortify_stopwords <- function(x,
   final_df$adjacent <- final_df$count.x - final_df$count.y
   final_df$stop_word <- ifelse(final_df$adjacent > final_df$count.y, T, F)
   
+  top_stops <- quantile(final_df$count.x, n)
+  
   temp <- final_df %>% 
     dplyr::filter(
-      stop_word == T
-    ) %>% 
-    dplyr::filter(count.x > quantile(count.x, n)) %>% 
-    dplyr::arrange(desc(count.x)) %>% 
+      stop_word == T & count.x > top_stops) %>%  
     dplyr::pull(value)
-  
+
   union(stopwords, temp)
 }
-
-
-
-
-
-

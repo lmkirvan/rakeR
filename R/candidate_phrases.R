@@ -21,7 +21,7 @@
 candidate_phrases <- function(x, 
                               split_words = smart_stop_words(), 
                               split_punct = basic_punct(),
-                              remove_numbers = F){
+                              remove_numbers = T){
   
   splits <- prep_stop_words(split_words = split_words, 
                             split_punct = split_punct,
