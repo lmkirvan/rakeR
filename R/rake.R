@@ -20,7 +20,7 @@ get_phrase_scores <- function(candidates, top_fraction = top_fraction){
     dplyr::summarise(
       score = sum(degreeFreq)) %>% 
     dplyr::filter(
-      score > quantile(score, top_fraction)
+      score >= quantile(score, top_fraction)
     )
   temp_df
 }  

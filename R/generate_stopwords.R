@@ -22,7 +22,7 @@ fortify_stopwords <- function(x,
                               sample_frac = 1, 
                               remove_numbers = FALSE){
   
-  if(remove_numbers ==T ){
+  if(remove_numbers == T){
     x <- stringr::str_replace_all(x, "\\(?[0-9,.]+\\)?", "")
   }
   
@@ -69,3 +69,6 @@ fortify_stopwords <- function(x,
 
   union(stopwords, temp)
 }
+
+
+

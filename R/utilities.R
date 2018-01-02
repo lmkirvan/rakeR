@@ -27,7 +27,7 @@ basic_stop_words <- function(){
               "further", "then", "once", "here", "there", "when", "where", "why", "how",
               "all", "any", "both", "each", "few", "more", "most", "other", "some", "such",
               "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "will",
-              "like", "can", "'ve")
+              "like", "can")
   words
 }
 
@@ -98,7 +98,7 @@ smart_stop_words <- function(){
              "which", "while", "whither", "who", "who's", "whoever", "whole", "whom", "whose", "why", "will",
              "willing", "wish", "with", "within", "without", "won't", "wonder", "would", "would", "wouldn't",
              "x", "y", "yes", "yet", "you", "you'd", "you'll", "you're", "you've", "your", "yours", "yourself",
-             "yourselves", "z", "zero", "'ve","'s")
+             "yourselves", "z", "zero")
   
   words
   
